@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "692987964873",
+    "project_id": "mealmingle-dcfc2",
+    "storage_bucket": "mealmingle-dcfc2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692987964873:android:5adbbb1324bd0784e14c18",
+        "android_client_info": {
+          "package_name": "com.example.mealmingle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "692987964873-v9arvvefduo7i4jbvvj36vu6jisvb1go.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mealmingle",
+            "certificate_hash": "1ff4dacbdd59c67e3c4d0ee383a18ce21b28aacf"
+          }
+        },
+        {
+          "client_id": "692987964873-c7eokokh1qd4o73bo5ejjuabl3nn9u73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCppQ-w_oPACHgOd0C6wDzI1IAaNDLIepU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "692987964873-6btire2jtdjbj18n6jnjt3h4fu18lvt1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
