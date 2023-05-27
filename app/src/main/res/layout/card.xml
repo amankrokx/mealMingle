@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.mealmingle.CardClass xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:paddingHorizontal="16dp"
+    android:orientation="horizontal"
+    >
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="24dp"
+        android:background="?android:attr/listDivider" />
+
+
+    <ImageView
+        android:id="@+id/foodImage"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:layout_below="@+id/divider"
+        app:srcCompat="@drawable/food_final" />
+
+    <TextView
+        android:id="@+id/foodName"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/foodImage"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@+id/foodImage"
+        android:maxHeight="50dp"
+        android:text="Meal nameng tghffgggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhext"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/button3"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/foodName"
+        android:layout_alignParentBottom="true"
+        android:drawableLeft="@drawable/baseline_location_on_24"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:text="GM Restro Bar" />
+
+    <TextView
+        android:id="@+id/servings"
+        android:layout_width="89dp"
+        android:layout_height="47dp"
+        android:layout_alignEnd="@+id/foodName"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        android:drawableLeft="@drawable/baseline_local_dining_24"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="24" />
+</com.example.mealmingle.CardClass>
