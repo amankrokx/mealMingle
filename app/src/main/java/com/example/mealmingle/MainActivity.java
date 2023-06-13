@@ -3,6 +3,7 @@ package com.example.mealmingle;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,15 +18,37 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.firebase.geofire.GeoFireUtils;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryBounds;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,15 +58,16 @@ public class MainActivity extends AppCompatActivity {
     // See: https://developer.android.com/training/basics/intents/result
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
-            new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
-                @Override
-                public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
-                    onSignInResult(result);
-                }
-            }
+            result -> onSignInResult(result)
     );
 
     Button loginButton, logoutButton;
+    GeoLocation center;
+    final double radius = 10000; // 10 km
+
+    LinearLayout l;
+    Context c;
+    LayoutInflater inflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +75,102 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 //        ActionBar actionBar = getSupportActionBar();
 //        actionBar.hide();
-        setContentView(R.layout.activity_main);
-        loginButton = findViewById(R.id.login);
-        logoutButton = findViewById(R.id.logout);
+        Intent changeActivity = new Intent(MainActivity.this, ProfileActivityActivity.class);
+        startActivity(changeActivity);
+//        setContentView(R.layout.activity_main);
+//        loginButton = findViewById(R.id.login);
+//        logoutButton = findViewById(R.id.logout);
+//
+//        l = findViewById(R.id.cards);
+//        c = l.getContext();
+//        inflater = LayoutInflater.from(c);
+//
+//
+//        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+//        String url = "http://ip-api.com/json"; // Replace with your API endpoint
+//
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+//                response -> {
+//                    try {
+//                        String lat = response.getString("lat");
+//                        String lon = response.getString("lon");
+//                        center = new GeoLocation(Double.parseDouble(lat), Double.parseDouble(lon));
+//                        Log.d("Coordinates", lat + ", " + lon);
+//                        listenToDatabase();
+//
+//                        // Process the user object
+//                    } catch (Exception e) {
+//                        Log.e("Coordinates", "Error");
+//                        e.printStackTrace();
+//                    }
+//                },
+//                error -> {
+//                    // Handle error
+//                    Log.e("Coordinates", "Error");
+//                    error.printStackTrace();
+//                });
+//
+//        requestQueue.add(request);
+//
+//        login();
 
-        LinearLayout l = findViewById(R.id.cards);
-        Context c = l.getContext();
-        LayoutInflater inflater = LayoutInflater.from(c);
-        for (int i = 0; i < 100; i++) {
-            CardClass customViewGroup = (CardClass) inflater.inflate(R.layout.card, null);
-            l.addView(customViewGroup);
+
+    }
+
+    public void listenToDatabase () {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        List<GeoQueryBounds> bounds = GeoFireUtils.getGeoHashQueryBounds(center, radius);
+        final List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+        for (GeoQueryBounds b : bounds) {
+            Query q = db.collection("meals")
+                    .orderBy("hash")
+                    .startAt(b.startHash)
+                    .endAt(b.endHash);
+
+            tasks.add(q.get());
         }
 
+        // Collect all the query results together into a single list
+        Tasks.whenAllComplete(tasks)
+                .addOnCompleteListener(t -> {
+                    List<DocumentSnapshot> matchingDocs = new ArrayList<>();
+
+                    for (Task<QuerySnapshot> task : tasks) {
+                        QuerySnapshot snap = task.getResult();
+                        for (DocumentSnapshot doc : snap.getDocuments()) {
+                            double lat = doc.getDouble("lat");
+                            double lng = doc.getDouble("lng");
+
+                            // We have to filter out a few false positives due to GeoHash
+                            // accuracy, but most will match
+                            GeoLocation docLocation = new GeoLocation(lat, lng);
+                            double distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center);
+                            if (distanceInM <= radius) {
+                                matchingDocs.add(doc);
+                            }
+                        }
+                    }
+                    // matchingDocs contains the results
+                    // ...
+                    Log.e("Matching Docs", matchingDocs.toString());
+                    for (DocumentSnapshot doc : matchingDocs) {
+                        Log.e("Matching Docs", doc.toString());
+                        CardClass customViewGroup = (CardClass) inflater.inflate(R.layout.card, null);
+                        l.addView(customViewGroup);
+                        customViewGroup.setCard(doc.get("name").toString(),
+                                                doc.get("hotelName").toString(),
+                                                doc.getDouble("lat"),
+                                                doc.getDouble("lng"),
+                                                doc.get("hotelId").toString(),
+                                                doc.get("description").toString(),
+                                                doc.get("hash").toString(),
+                                                doc.get("servings").toString(),
+                                                Integer.parseInt(doc.get("servings").toString()),
+                                                doc.getBoolean("nonVeg")
+                                                );
+                    }
+
+                });
     }
 
     public void login () {
@@ -123,14 +231,13 @@ public class MainActivity extends AppCompatActivity {
         MainActivity act = this;
         AuthUI.getInstance()
                 .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // ...
+                .addOnCompleteListener(task -> {
+                    // ...
 //                        login();
-                        Toast.makeText(act, "Logged Out Successfully !", Toast.LENGTH_SHORT).show();
-                        loginButton.setVisibility(View.VISIBLE);
-                        logoutButton.setVisibility(View.GONE);
-                    }
+                    Toast.makeText(act, "Logged Out Successfully !", Toast.LENGTH_SHORT).show();
+                    loginButton.setVisibility(View.VISIBLE);
+                    logoutButton.setVisibility(View.GONE);
                 });
     }
+
 }
