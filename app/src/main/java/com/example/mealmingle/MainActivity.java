@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -45,6 +48,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -73,48 +77,56 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("MainActivity", "Started");
         super.onCreate(savedInstanceState);
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.hide();
-        Intent changeActivity = new Intent(MainActivity.this, ProfileActivityActivity.class);
-        startActivity(changeActivity);
-//        setContentView(R.layout.activity_main);
-//        loginButton = findViewById(R.id.login);
-//        logoutButton = findViewById(R.id.logout);
-//
-//        l = findViewById(R.id.cards);
-//        c = l.getContext();
-//        inflater = LayoutInflater.from(c);
-//
-//
-//        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-//        String url = "http://ip-api.com/json"; // Replace with your API endpoint
-//
-//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-//                response -> {
-//                    try {
-//                        String lat = response.getString("lat");
-//                        String lon = response.getString("lon");
-//                        center = new GeoLocation(Double.parseDouble(lat), Double.parseDouble(lon));
-//                        Log.d("Coordinates", lat + ", " + lon);
-//                        listenToDatabase();
-//
-//                        // Process the user object
-//                    } catch (Exception e) {
-//                        Log.e("Coordinates", "Error");
-//                        e.printStackTrace();
-//                    }
-//                },
-//                error -> {
-//                    // Handle error
-//                    Log.e("Coordinates", "Error");
-//                    error.printStackTrace();
-//                });
-//
-//        requestQueue.add(request);
-//
-//        login();
+//        Intent changeActivity = new Intent(MainActivity.this, ProfileActivityActivity.class);
+//        startActivity(changeActivity);
+        setContentView(R.layout.activity_main);
+
+        loginButton = findViewById(R.id.login);
+        logoutButton = findViewById(R.id.logout);
+
+        l = findViewById(R.id.cards);
+        c = l.getContext();
+        inflater = LayoutInflater.from(c);
 
 
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        String url = "http://ip-api.com/json"; // Replace with your API endpoint
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        String lat = response.getString("lat");
+                        String lon = response.getString("lon");
+                        center = new GeoLocation(Double.parseDouble(lat), Double.parseDouble(lon));
+                        Log.d("Coordinates", lat + ", " + lon);
+                        listenToDatabase();
+
+                        // Process the user object
+                    } catch (Exception e) {
+                        Log.e("Coordinates", "Error");
+                        e.printStackTrace();
+                    }
+                },
+                error -> {
+                    // Handle error
+                    Log.e("Coordinates", "Error");
+                    error.printStackTrace();
+                });
+
+        requestQueue.add(request);
+
+        login();
+
+    }
+
+    // on render xomplete
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Log.d("MainActivity", "onWindowFocusChanged");
+        if (hasFocus) {
+            listenToDatabase();
+        }
     }
 
     public void listenToDatabase () {
@@ -157,18 +169,21 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Matching Docs", doc.toString());
                         CardClass customViewGroup = (CardClass) inflater.inflate(R.layout.card, null);
                         l.addView(customViewGroup);
-                        customViewGroup.setCard(doc.get("name").toString(),
-                                                doc.get("hotelName").toString(),
-                                                doc.getDouble("lat"),
-                                                doc.getDouble("lng"),
-                                                doc.get("hotelId").toString(),
-                                                doc.get("description").toString(),
-                                                doc.get("hash").toString(),
-                                                doc.get("servings").toString(),
-                                                Integer.parseInt(doc.get("servings").toString()),
-                                                doc.getBoolean("nonVeg")
-                                                );
+                        // public void setCard (String name, String hotelName, Double lat, Double lng, String hotelId, String description, String hash, String photoUrl, int servings, boolean nonVeg)
+                        customViewGroup.setCard(
+                                doc.get("name", String.class),
+                                doc.get("hotelName", String.class),
+                                doc.get("lat", Double.class),
+                                doc.get("lng", Double.class),
+                                doc.get("hotelId", String.class),
+                                doc.get("description", String.class),
+                                doc.get("hash", String.class),
+                                doc.get("photoUrl", String.class),
+                                doc.get("servings", Integer.class),
+                                doc.get("nonVeg", Boolean.class)
+                        );
                     }
+                    // add bottom_navigation_span at the end to keep the last card visible
 
                 });
     }
@@ -215,6 +230,10 @@ public class MainActivity extends AppCompatActivity {
             // ...
             loginButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Logged In Successfully !", Toast.LENGTH_SHORT).show();
+            ImageButton profilePic = findViewById(R.id.profileButton);
+            Picasso.get().load(user.getPhotoUrl()).error(R.drawable.baseline_account_circle_24).placeholder(R.drawable.baseline_account_circle_24).into(profilePic);
+
             Log.d("MainActivity", user.toString());
         } else {
             // Sign in failed. If response is null the user canceled the
@@ -225,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
             loginButton.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.GONE);
         }
+
     }
 
     public void logout (View v) {
@@ -237,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(act, "Logged Out Successfully !", Toast.LENGTH_SHORT).show();
                     loginButton.setVisibility(View.VISIBLE);
                     logoutButton.setVisibility(View.GONE);
+
                 });
     }
 

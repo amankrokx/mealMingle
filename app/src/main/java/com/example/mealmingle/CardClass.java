@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 
 public class CardClass extends RelativeLayout {
@@ -99,30 +101,9 @@ public class CardClass extends RelativeLayout {
         hotelNameView.setText(hotelName);
         servingsView.setText(servings + "");
 
-        // Create a request queue using Volley
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        Log.d("PhotoUrl", photoUrl);
 
-        // Create an ImageLoader instance
-        ImageLoader imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
-            @Override
-            public Bitmap getBitmap(String url) {
-                // Return null for default implementation
-                return null;
-            }
-
-            @Override
-            public void putBitmap(String url, Bitmap bitmap) {
-                // Do nothing for default implementation
-            }
-        });
-
-        // get image from url and add to ImageView
-        // using ImageLoader
-        // Create an ImageLoader request
-        ImageLoader.ImageListener listener = ImageLoader.getImageListener(imageView,
-                android.R.drawable.ic_menu_gallery, android.R.drawable.ic_menu_close_clear_cancel);
-        imageLoader.get(this.photoUrl, listener);
-
+        Picasso.get().load(photoUrl).resize(112, 112).centerCrop().into(imageView);
 
 
     }

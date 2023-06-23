@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.mealmingle.BottomNavigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,6 +19,7 @@
         app:layout_constraintEnd_toStartOf="@+id/historyButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/historyButton"
+
         app:srcCompat="@drawable/baseline_home_24" />
 
     <ImageButton
@@ -30,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_home_24" />
+        app:srcCompat="@drawable/baseline_history_24" />
 
     <ImageButton
         android:id="@+id/profileButton"
@@ -41,5 +42,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/historyButton"
         app:layout_constraintTop_toTopOf="@+id/historyButton"
-        app:srcCompat="@drawable/baseline_home_24" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:srcCompat="@drawable/baseline_history_24"
+        />
+</com.example.mealmingle.BottomNavigation>
