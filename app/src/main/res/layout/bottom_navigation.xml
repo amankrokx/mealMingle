@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:background="?attr/colorSurfaceVariant"
+    android:background="?attr/colorSurface"
     app:layout_constraintBaseline_toBaselineOf="parent"
     >
 
@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toStartOf="@+id/historyButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/historyButton"
-
+        android:background="?attr/colorSurface"
         app:srcCompat="@drawable/baseline_home_24" />
 
     <ImageButton
@@ -31,7 +31,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:background="?attr/colorSurface"
         app:srcCompat="@drawable/baseline_history_24" />
+
 
     <ImageButton
         android:id="@+id/profileButton"
@@ -39,9 +41,10 @@
         android:layout_height="64dp"
         android:layout_marginStart="16dp"
         android:contentDescription="Profile settings button"
+        android:background="?attr/colorSurface"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/historyButton"
         app:layout_constraintTop_toTopOf="@+id/historyButton"
-        app:srcCompat="@drawable/baseline_history_24"
+        app:srcCompat="@drawable/baseline_account_circle_24"
         />
 </com.example.mealmingle.BottomNavigation>

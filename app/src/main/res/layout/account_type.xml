@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    >
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Account Type to Continue"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="22sp"
+
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/hotel"
+        android:layout_marginHorizontal="16dp"
+        style="@style/FirebaseUI.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="HOTEL"
+        android:onClick="setAccountType"
+        app:layout_constraintEnd_toStartOf="@+id/ngo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/ngo"
+        style="@style/FirebaseUI.Button"
+        android:layout_marginHorizontal="16dp"
+        android:onClick="setAccountType"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="NGO"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/hotel"
+        app:layout_constraintTop_toTopOf="@+id/hotel" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

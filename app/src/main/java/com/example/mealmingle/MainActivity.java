@@ -7,9 +7,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,10 +72,12 @@ public class MainActivity extends AppCompatActivity {
     Button loginButton, logoutButton;
     GeoLocation center;
     final double radius = 10000; // 10 km
-
+    FirebaseUser user;
     LinearLayout l;
     Context c;
     LayoutInflater inflater;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,46 +94,65 @@ public class MainActivity extends AppCompatActivity {
         c = l.getContext();
         inflater = LayoutInflater.from(c);
 
+        // Check if user is signed in (non-null) and update UI accordingly.
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            Log.d("MainActivity", "User is signed in");
+            loginButton.setVisibility(View.GONE);
+            logoutButton.setVisibility(View.VISIBLE);
+            UserManager.initUser(user);
+            ImageButton profilePic = findViewById(R.id.profileButton);
+            Picasso.get().load(user.getPhotoUrl()).error(R.drawable.baseline_account_circle_24).placeholder(R.drawable.baseline_account_circle_24).into(profilePic);
+            Log.d("MainActivity", user.toString());
+        } else {
+            Log.d("MainActivity", "User is not signed in");
+            loginButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.GONE);
+        }
 
-        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-        String url = "http://ip-api.com/json"; // Replace with your API endpoint
+            RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+            String url = "http://ip-api.com/json"; // Replace with your API endpoint
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    try {
-                        String lat = response.getString("lat");
-                        String lon = response.getString("lon");
-                        center = new GeoLocation(Double.parseDouble(lat), Double.parseDouble(lon));
-                        Log.d("Coordinates", lat + ", " + lon);
-                        listenToDatabase();
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                    response -> {
+                        try {
+                            String lat = response.getString("lat");
+                            String lon = response.getString("lon");
+                            center = new GeoLocation(Double.parseDouble(lat), Double.parseDouble(lon));
+                            Log.d("Coordinates", lat + ", " + lon);
+                            listenToDatabase();
 
-                        // Process the user object
-                    } catch (Exception e) {
+                            // Process the user object
+                        } catch (Exception e) {
+                            Log.e("Coordinates", "Error");
+                            e.printStackTrace();
+                        }
+                    },
+                    error -> {
+                        // Handle error
                         Log.e("Coordinates", "Error");
-                        e.printStackTrace();
-                    }
-                },
-                error -> {
-                    // Handle error
-                    Log.e("Coordinates", "Error");
-                    error.printStackTrace();
-                });
+                        error.printStackTrace();
+                    });
 
-        requestQueue.add(request);
+            requestQueue.add(request);
 
-        login();
+
+
+
+
+
 
     }
 
     // on render xomplete
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        Log.d("MainActivity", "onWindowFocusChanged");
-        if (hasFocus) {
-            listenToDatabase();
-        }
-    }
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        Log.d("MainActivity", "onWindowFocusChanged");
+//        if (hasFocus) {
+//            listenToDatabase();
+//        }
+//    }
 
     public void listenToDatabase () {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -227,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
             // ...
             loginButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
@@ -243,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", "Error Login");
             loginButton.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.GONE);
+
         }
 
     }
@@ -257,6 +284,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(act, "Logged Out Successfully !", Toast.LENGTH_SHORT).show();
                     loginButton.setVisibility(View.VISIBLE);
                     logoutButton.setVisibility(View.GONE);
+                    ImageButton profilePic = findViewById(R.id.profileButton);
+                    Picasso.get().load(R.drawable.baseline_account_circle_24).error(R.drawable.baseline_account_circle_24).placeholder(R.drawable.baseline_account_circle_24).into(profilePic);
 
                 });
     }

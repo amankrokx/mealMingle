@@ -25,6 +25,7 @@ import java.util.List;
 
 public class History extends AppCompatActivity {
 
+    FirebaseUser user;
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
             result -> onSignInResult(result)
@@ -33,10 +34,23 @@ public class History extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile_activity);
+        setContentView(R.layout.activity_history);
         loginButton = findViewById(R.id.login);
         logoutButton = findViewById(R.id.logout);
-        login();
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            loginButton.setVisibility(View.GONE);
+            logoutButton.setVisibility(View.VISIBLE);
+            ImageButton profilePic = findViewById(R.id.profileButton);
+            Picasso.get().load(user.getPhotoUrl()).error(R.drawable.baseline_account_circle_24).placeholder(R.drawable.baseline_account_circle_24).into(profilePic);
+            Log.d("MainActivity", user.toString());
+        } else {
+            // No user is signed in
+            loginButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.GONE);
+        }
     }
     public void login (View v) {
 
@@ -79,6 +93,7 @@ public class History extends AppCompatActivity {
             // Successfully signed in
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             // ...
+            UserManager.initUser(user);
             loginButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
             Toast.makeText(this, "Logged In Successfully !", Toast.LENGTH_SHORT).show();
@@ -105,6 +120,8 @@ public class History extends AppCompatActivity {
                     Toast.makeText(this, "Logged Out Successfully !", Toast.LENGTH_SHORT).show();
                     loginButton.setVisibility(View.VISIBLE);
                     logoutButton.setVisibility(View.GONE);
+                    ImageButton profilePic = findViewById(R.id.profileButton);
+                    Picasso.get().load(R.drawable.baseline_account_circle_24).error(R.drawable.baseline_account_circle_24).placeholder(R.drawable.baseline_account_circle_24).into(profilePic);
                 });
     }
 
