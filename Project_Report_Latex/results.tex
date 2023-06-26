@@ -1,0 +1,85 @@
+\fontfamily{pcr}\selectfont
+\chapter{Implementation}
+%replace the code with the one which associates with your project.
+
+\section{Creating a User Login}
+\begin{verbatim}
+public void login () {
+        // Choose authentication providers
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.PhoneBuilder().build(),
+                new AuthUI.IdpConfig.GoogleBuilder().build()
+        );
+        // Create and launch sign-in intent
+        Intent signInIntent = AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .setLogo(R.drawable.logo)
+                .setTheme(R.style.MealMingle)
+                .build();
+        signInLauncher.launch(signInIntent);
+    }
+\end{verbatim}
+\section{Requesting User Logout}
+\begin{verbatim}
+public void logout (View v) {
+        MainActivity act = this;
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(task -> {
+                    // ...
+//                        login();
+                    Toast.makeText(act, "Logged Out Successfully !", 
+                    Toast.LENGTH_SHORT).show();
+                    loginButton.setVisibility(View.VISIBLE);
+                    logoutButton.setVisibility(View.GONE);
+                    ImageButton profilePic = 
+                    findViewById(R.id.profileButton);
+                    Picasso.get().load(R.drawable.baseline_account_circle_
+                    24).error(R.drawable.baseline_account_circle_24).place
+                    holder(R.drawable.baseline_account_circle_24).into(pro
+                    filePic);
+
+                });
+    }
+\end{verbatim}
+\section{Configuring Account Type}
+\begin{verbatim}
+public void setAccountType(View v) {
+        Intent intent = new Intent(this, ProfileActivityActivity.class);
+//        startActivity(intent);
+        // get button name
+        String type = ((Button) v).getText().toString();
+
+// set type in database
+        UserManager.db.collection("users").document(user.getUid()).update(
+        "type", type)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Account Type Updated 
+                        Successfully !", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "Error Updating Account Type 
+                        !", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+\end{verbatim}
+\section{Utilizing Geohash for Meal Listings}
+\begin{verbatim}
+ public void listenToDatabase () {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        List<GeoQueryBounds> bounds = 
+        GeoFireUtils.getGeoHashQueryBounds(center, radius);
+        final List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+        for (GeoQueryBounds b : bounds) {
+            Query q = db.collection("meals")
+                    .orderBy("hash")
+                    .startAt(b.startHash)
+                    .endAt(b.endHash);
+
+            tasks.add(q.get());
+        }
+\end{verbatim}
