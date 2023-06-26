@@ -1,0 +1,78 @@
+\chapter{Introduction}
+\section{About the Project}
+The MealMingle project is a mobile application aimed at addressing food waste and food insecurity in our communities. It connects individuals, hotels, restaurants, and NGOs in an effort to foster collaboration and combat hunger. With the rise in food waste and the prevalence of food insecurity, MealMingle provides a platform for individuals to share their excess meals, donate to hunger relief charities, and volunteer their time to make a positive impact.
+
+The MealMingle app enables users to create profiles and browse listings for available meals. Hotels and restaurants can contribute their surplus meals, reducing food waste and providing a reliable source of food for those in need. NGOs have the opportunity to directly book meals for individuals facing food insecurity. Through its user-friendly interface and community-driven approach, MealMingle encourages empathy, unity, and social responsibility. By actively participating in the app, users contribute to reducing food waste, supporting hunger relief efforts, and fostering a stronger sense of community and collaboration.
+
+In the following sections, we will explore the development and functionality of the MealMingle app, including its features, design, and potential social impact. We will also discuss the challenges encountered during implementation and provide insights into future enhancements and expansion opportunities. Together, let us embark on this journey to combat food waste, alleviate hunger, and build a stronger, more compassionate community through the MealMingle project.
+\subsection{Android Studio}
+Android Studio is the official integrated development environment (IDE) for Google's Android operating system, built on JetBrains' IntelliJ IDEA software and designed specifically for Android development. It is available for download on Windows, macOS and Linux based operating systems or as a subscription-based service in 2020. It is a replacement for the Eclipse Android Development Tools (E-ADT) as the primary IDE for native Android application development. 
+
+Android Studio supports all the same programming languages of IntelliJ (and CLion) e.g. Java, C++, and more with extensions, such as Go; and Android Studio 3.0 or later supports Kotlin and "all Java 7 language features and a subset of Java 8 language features that vary by platform version." External projects backport some Java 9 features. While IntelliJ states that Android Studio supports all released Java versions, and Java 12, it's not clear to what level Android Studio supports Java versions up to Java 12 (the documentation mentions partial Java 8 support). At least some new language features up to Java 12 are usable in Android.
+
+\subsection{Android SDK}
+
+The Android SDK is a software development kit that includes a comprehensive set of development tools. These include a debugger, libraries, a handset emulator based on QEMU, documentation, sample code, and tutorials. Currently supported development platforms include computers running Linux (any modern desktop Linux distribution), Mac OS X 10.5.8 or later, and Windows 7 or later. As of March 2015, the SDK is not available on Android itself, but software development is possible by using specialized Android applications.
+
+Until around the end of 2014, the officially-supported integrated development environment (IDE) was Eclipse using the Android Development Tools (ADT) Plugin.As of 2015, Android Studio, is the official IDE; however, developers are free to use others, but Google made it clear that ADT was officially deprecated since the end of 2015 to focus on Android Studio as the official Android IDE. Additionally, developers may use any text editor to edit Java and XML files, then use command line tools (Java Development Kit and Apache Ant are required) to create, build and debug Android applications as well as control attached Android devices (e.g., triggering a reboot, installing software package(s) remotely).
+
+\subsection{Emulator}
+
+The Android Emulator simulates Android devices on your computer so that you can test your application on a variety of devices and Android API levels without needing to have each physical device.
+
+The emulator provides almost all of the capabilities of a real Android device. You can simulate incoming phone calls and text messages, specify the location of the device, simulate different network speeds, simulate rotation and other hardware sensors, access the Google Play Store, and much more.
+
+Testing your app on the emulator is in some ways faster and
+easier than doing so on a physical device. For example, you can transfer data faster to the emulator than to a device connected over USB.
+
+The emulator comes with predefined configurations for various Android phone, tablet, Wear OS, and Android TV devices.
+
+
+\subsection{Firebase}
+
+Firebase is a product of Google which helps developers to build, manage, and grow their apps easily. It helps developers to build their apps faster and in a more secure way. No programming is required on the firebase side which makes it easy to use its features more efficiently. It provides services to android, ios, web, and unity. It provides cloud storage. It uses NoSQL for the database for the storage of data.
+In this architecture, Firebase sits between the server and clients. Your servers can connect to Firebase and interact with the data just like any other client would. In other words, your server communicates with clients by manipulating data in Firebase. Our Security and Firebase Rules language lets you assign full access to your data to your server. Your server code can then listen for any changes to data made by clients, and respond appropriately.
+ In this configuration, even though you’re still running a server, Firebase is handling all of the heavy lifting of scale and real-time updates.
+ Firebase initially was an online chat service provider to various websites through API and ran
+with the name Envolve. It got popular as developers used it to exchange application data like a game
+state in real time across their users more than the chats. This resulted in the separation of the Envolve
+architecture and it’s chat system. The Envolve architecture was further evolved by it’s founders James
+Tamplin and Andrew Lee,to what modern day Firebase is in the year 2012.
+In this architecture, Firebase sits between the server and clients. Your servers can connect to
+Firebase and interact with the data just like any other client would. In other words, your server
+communicates with clients by manipulating data in Firebase. Our Security and Firebase Rules
+language lets you assign full access to your data to your server. Your server code can then listen
+for any changes to data made by clients, and respond appropriately. In this configuration, even though
+you’re still running a server, Firebase is handling all of the heavy lifting of scale and real-time updates.
+\subsection{Java}
+Java is a programming language independent of all platforms and can be used for multiple operating systems.Keeping security in mind, all other programming languages are developed, including the interpreter, compiler, and run-time environment. A lot of concentration is put on testing to ensure potential early errors are caught.Java is the first choice of android app developers because of ease of use, robustness, security features, and cross-platform development capabilities.
+\subsection{XML}
+Extensible Markup Language (XML) is a markup language and file format for storing, transmitting, and reconstructing arbitrary data. It defines a set of rules for encoding documents in a format that is both human-readable and machine-readable. The World Wide Web Consortium's XML 1.0 Specification of 1998 and several other related specifications—all of them free open standards—define XML.
+
+The design goals of XML emphasize simplicity, generality, and usability across the Internet. It is a textual data format with strong support via Unicode for different human languages. Although the design of XML focuses on documents, the language is widely used for the representation of arbitrary data structures such as those used in web services.
+
+Several schema systems exist to aid in the definition of XML-based languages, while programmers have developed many application programming interfaces (APIs) to aid the processing of XML data. 
+
+\section{ Existing System}
+Prior to the implementation of the MealMingle app, addressing food waste and food insecurity relied heavily on traditional methods such as individual efforts, local charities, and fragmented donation systems. These methods often lacked a streamlined approach and efficient coordination, resulting in potential food waste and uneven distribution of resources. The lack of a centralized platform made it challenging for individuals, hotels, restaurants, and NGOs to connect and collaborate effectively in combating these pressing issues. The MealMingle app seeks to bridge this gap by providing a user-friendly platform that connects all stakeholders, streamlines the process of sharing meals, and facilitates direct bookings for NGOs, ultimately fostering a more efficient, inclusive, and sustainable approach to combating food waste and hunger.
+\subsection{Limitation of Existing System}
+The existing systems for addressing food waste and food insecurity face several limitations that hinder their effectiveness in tackling these pressing issues. One major limitation is the lack of efficient coordination and communication. The absence of a centralized platform and streamlined processes makes it challenging to effectively match surplus food with individuals in need, leading to potential delays, inefficiencies, and a mismatch between food supply and demand.
+
+Another limitation is the limited scalability and reach of existing systems. Many initiatives operate on a local or regional scale, which restricts their ability to address food waste and food insecurity on a larger scale. This limits their impact and prevents them from effectively reaching and assisting a wider range of individuals and communities in need.
+
+Furthermore, inadequate technological integration is a common limitation. Some existing systems may not fully leverage the power of technology to streamline processes and enhance accessibility. Outdated or limited technological integration can result in manual and time-consuming tasks, reducing the efficiency and scalability of the systems.
+
+Additionally, the fragmented nature of existing systems poses a challenge. With individual efforts and local charities operating independently, there is a lack of unified strategies and resources. This fragmentation can lead to duplication of efforts, inefficient use of resources, and difficulties in ensuring a fair and equitable distribution of food.
+
+Moreover, insufficient data collection and monitoring systems hinder the ability to assess the impact and effectiveness of existing initiatives. The lack of comprehensive data makes it challenging to make informed decisions, identify areas of improvement, and measure the success of interventions in reducing food waste and addressing food insecurity.
+
+Addressing these limitations is crucial to developing a more effective and sustainable approach. The MealMingle project aims to overcome these challenges by providing a centralized, user-friendly platform that fosters efficient coordination, scalability, technological integration, and data-driven decision-making. By leveraging technology and community participation, MealMingle strives to create a more impactful and inclusive solution for addressing food waste and food insecurity.
+
+Some of the major limitations that persons with food-waste management app are:
+\begin{itemize}
+	\item Lack of efficient coordination and communication between surplus food providers and individuals in need.
+	\item Limited scalability and reach, often operating on a local or regional scale, which hinders broader impact.
+	\item Inadequate technological integration, resulting in manual and time-consuming processes that limit efficiency and scalability. 
+\end{itemize}
+\section{ Problem Statement}
+The pressing issues of food waste and food insecurity pose significant challenges to our communities. Despite various existing efforts, there remains a need for a more efficient and inclusive solution that addresses the limitations of current systems. The problem at hand is the lack of a centralized platform that facilitates seamless coordination and communication between surplus food providers, individuals in need, hotels, restaurants, and NGOs. Additionally, the existing systems face limitations in terms of scalability, technological integration, and data-driven decision-making. These challenges hinder the effective reduction of food waste and the equitable distribution of resources to combat food insecurity. Therefore, there is a critical need to develop a comprehensive solution that leverages technology, fosters collaboration, and ensures efficient utilization of surplus food resources to alleviate hunger and promote a sustainable approach to food consumption.
