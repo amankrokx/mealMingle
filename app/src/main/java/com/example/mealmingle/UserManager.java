@@ -22,10 +22,13 @@ public class UserManager {
     public static FirebaseUser user;
     public static FirebaseFirestore db;
 
+    public static String uid;
+
     public static DocumentSnapshot userData;
 
     public static DocumentSnapshot initUser (FirebaseUser u) {
         user = u;
+        uid = user.getUid();
         // check in /users in firebase Firestore, if user exists, do nothing, else create user
         // users : {
         //  uid : {

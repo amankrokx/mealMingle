@@ -1,107 +1,47 @@
-import IconButton from "@mui/material/IconButton"
-import { useTheme } from "@mui/material/styles"
-import { onIdTokenChanged } from "firebase/auth"
-import { SnackbarProvider } from "notistack"
-import React, { useEffect, useRef, useState } from "react"
-import { Route, Routes, useNavigate } from "react-router-dom"
-import Loader from "./components/Loader"
-import LoaderUtils from "./components/Loader/LoaderUtils"
-import LoginWindow from "./components/LoginWindow"
-import Navbar from "./components/Navbar"
-import RoleSelector from "./components/RoleSelector"
-import Snack from "./components/Snack"
-import SnackbarUtils from "./components/SnackbarUtils"
-import auth from "./firebase/auth"
-import AuthContext from "./firebase/auth/AuthContext"
-import Home from "./pages/Home"
+import { ThemeProvider, createTheme } from "@mui/material"
+import 'material-icons/iconfont/material-icons.css'
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Loader from "./components/loader/index.jsx"
+import Profile from "./pages/profile/index.jsx"
 
 function App() {
-    const notistackRef = useRef()
-    const theme = useTheme()
-    const [user, setUser] = useState(null)
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        window.document.title = "Score Card"
-        window.document.body.style.backgroundColor = theme.palette.background.default
-        window.document.body.style.height = "100%"
-        LoaderUtils.halt()
-        onIdTokenChanged(
-            auth,
-            async user => {
-                if (user) {
-                    // get custom claims
-                    const idTokenResult = await user.getIdTokenResult(true)
-                    user.token = idTokenResult.token
-                    user.isUser = idTokenResult.claims.isUser
-                    user.isCreator = idTokenResult.claims.isCreator
-                    setUser(user)
-                    SnackbarUtils.success("Welcome !")
-                    LoaderUtils.unhalt()
-                    if (window.location.pathname === "/login") navigate("/")
-                } else {
-                    navigate("/login")
-                    LoaderUtils.unhalt()
-                    setUser(null)
-                }
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: "#20c77c",
             },
-            err => {
-                console.log(err)
-                SnackbarUtils.error("Unable to Authenticate")
-                LoaderUtils.unhalt()
+            secondary: {
+                main: "#0061A5",
             }
-        )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const authSyncSettings = {
-        user: user,
-        auth,
-        setUser: setUser,
-    }
+        },
+        components: {
+            MuiButton: {
+                variants: [
+                    {
+                        props: { variant: "contained", color: "primary" },
+                        style: {
+                            color: "white",
+                        }
+                    }
+                ]
+            }
+        },
+        mode: "light",
+    })
 
     return (
-        <AuthContext.Provider value={authSyncSettings}>
-            <SnackbarProvider
-                dense
-                preventDuplicate
-                maxSnack={3}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                }}
-                ref={notistackRef}
-                action={key => (
-                    <IconButton aria-label="Close" onClick={() => notistackRef.current.closeSnackbar(key)}>
-                        <span className="material-icons" style={{ color: theme.palette.white.main }}>
-                            close
-                        </span>
-                    </IconButton>
-                )}
-            >
-                <div
-                    className="App"
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        height: "100%",
-                        width: "100%",
-                    }}
-                >
-                    <Snack></Snack>
-                    <Loader></Loader>
-                    <Navbar />
-                    {user && (user.isCreator || user.isUser || <RoleSelector />)}
-                    <Routes>
-                        <Route exact path="/login" element={<LoginWindow />} />
-                        <Route exact path="/" element={<Home />} />
-                        {/* <Route exact path="/watch/*" element={<Watch />} /> */}
-                        {/* <Route exact path="/upload" element={<Upload />} /> */}
-                        {/* <Route exact path="/creator" element={<AddScore />} /> */}
-                    </Routes>
-                </div>
-            </SnackbarProvider>
-        </AuthContext.Provider>
+        <ThemeProvider theme={theme}>
+            <Loader />
+            {/* react router */}
+            <BrowserRouter>
+                <Routes>
+                    <Route exact path="/" element={<h1>Home</h1>} />
+                    <Route exact path="/profile" element={<Profile />} />
+                    <Route exact path="/history" element={<h1>Foods</h1>} />
+                </Routes>
+            </BrowserRouter>
+
+        </ThemeProvider>
     )
 }
 

@@ -83,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("MainActivity", "Started");
         super.onCreate(savedInstanceState);
-//        Intent changeActivity = new Intent(MainActivity.this, ProfileActivityActivity.class);
-//        startActivity(changeActivity);
+
         setContentView(R.layout.activity_main);
 
         loginButton = findViewById(R.id.login);
@@ -143,16 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    // on render xomplete
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        Log.d("MainActivity", "onWindowFocusChanged");
-//        if (hasFocus) {
-//            listenToDatabase();
-//        }
-//    }
 
     public void listenToDatabase () {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -248,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
-        IdpResponse response = result.getIdpResponse();
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

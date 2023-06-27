@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -43,6 +44,9 @@ public class History extends AppCompatActivity {
             // User is signed in
             loginButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
+            WebView w = findViewById(R.id.historyWebView);
+            w.getSettings().setJavaScriptEnabled(true);
+            w.loadUrl("https://mealmingle.web.app/history#uid=" + user.getUid());
             ImageButton profilePic = findViewById(R.id.profileButton);
             Picasso.get().load(user.getPhotoUrl()).error(R.drawable.baseline_account_circle_24).placeholder(R.drawable.baseline_account_circle_24).into(profilePic);
             Log.d("MainActivity", user.toString());

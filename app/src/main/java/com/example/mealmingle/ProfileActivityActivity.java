@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -46,6 +47,9 @@ public class ProfileActivityActivity extends AppCompatActivity {
             loginButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
             ImageButton profilePic = findViewById(R.id.profileButton);
+            WebView w = findViewById(R.id.profileWebView);
+            w.getSettings().setJavaScriptEnabled(true);
+            w.loadUrl("https://mealmingle.web.app/profile#uid=" + user.getUid());
             Picasso.get().load(user.getPhotoUrl()).error(R.drawable.baseline_account_circle_24).placeholder(R.drawable.baseline_account_circle_24).into(profilePic);
             initUiData();
             Log.d("MainActivity", user.toString());
