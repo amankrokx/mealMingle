@@ -43,17 +43,19 @@ export default function Hotel({ hotels = [], uid }) {
                             // })
                             // }
                             // })
-            fetch("http://ip-api.com/json").then(res => res.json()).then(data => {
-                const location = new L.LatLng(data.lat, data.lon)
-                map.setView(location, 13)
-                L.marker(location, {
-                    draggable: true,
+            fetch("https://geo.ipify.org/api/v2/country,city?apiKey=at_0ekDKG5wYch97BNybAJcO4gRhuC0Y")
+                .then(res => res.json())
+                .then(data => {
+                    const location = new L.LatLng(data.location.lat, data.location.lng)
+                    map.setView(location, 13)
+                    L.marker(location, {
+                        draggable: true,
+                    })
+                        .addTo(map)
+                        .bindPopup("You are here")
+                        .on("moveend", mapMove)
+                    setAddHotel(e => ({ ...e, location: [data.lat, data.lon] }))
                 })
-                    .addTo(map)
-                    .bindPopup("You are here")
-                    .on("moveend", mapMove)
-                setAddHotel(e => ({ ...e, location: [data.lat, data.lon] }))
-            })
                             
             return () => {
                 map.off('click', mapClick)

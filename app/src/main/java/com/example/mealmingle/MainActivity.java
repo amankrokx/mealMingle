@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button loginButton, logoutButton;
     GeoLocation center;
-    final double radius = 10000; // 10 km
+    final double radius = 20000; // 20 km
     FirebaseUser user;
     LinearLayout l;
     Context c;
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                             // accuracy, but most will match
                             GeoLocation docLocation = new GeoLocation(lat, lng);
                             double distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center);
-                            if (distanceInM <= radius) {
+                            if (distanceInM <= radius && doc.get("servings", Integer.class) > 0) {
                                 matchingDocs.add(doc);
                             }
                         }

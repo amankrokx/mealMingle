@@ -31,17 +31,17 @@ servings
 10
 */
 
-export default function Hotel({ hotels, uid }) {
+export default function Hotel({ hotels = [], uid }) {
     const [meals, setMeals] = useState([])
     const [mealData, setMealData] = useState({
-        open: true,
+        open: false,
         nonVeg: false,
         name: "",
         servings: 0,
         description: "",
         price: 0,
-        hotelId: hotels[0].hotelId,
-        hotelName: hotels[0].name,
+        hotelId: hotels[0]?.hotelId,
+        hotelName: hotels[0]?.name,
         photoUrl: "https://picsum.photos/seed/food/200/200",
         expiresAt: serverTimestamp(),
     })
@@ -51,6 +51,7 @@ export default function Hotel({ hotels, uid }) {
         // gather hotel ids from hotels and find meals associated with them at meals/mealid/{hotelid: hotelid}
         // set meals to state
         const hotelIds = hotels.map(hotel => hotel.hotelId)
+        if (hotelIds.length === 0) return console.log("No hotels found")
         // query firebase for meals based on hotelIds
         const q = query(collection(firestore, "meals"), where("hotelId", "in", hotelIds))
         const unsub = onSnapshot(q, (querySnapshot) => {
@@ -95,7 +96,7 @@ export default function Hotel({ hotels, uid }) {
             lng: hotel.lng,
             hash: hotel.hash,
             photoUrl: "https://picsum.photos/80",
-            servings: mealData.servings,
+            servings: parseInt(mealData.servings),
             nonVeg: mealData.nonVeg,
             description: mealData.description,
             expiresAt: serverTimestamp(),
@@ -127,6 +128,7 @@ export default function Hotel({ hotels, uid }) {
                     Meals History
                 </Typography>
                 <Button variant="contained" color="primary"
+                    disabled={hotels.length === 0}
                     onClick={() => {
                         setMealData({
                             open: true,
@@ -137,6 +139,7 @@ export default function Hotel({ hotels, uid }) {
                 </Button>
             </nav>
             <br></br>
+            {hotels.length === 0 ? <Alert severity="info">You don't have any hotels yet</Alert> : null}
             <Stack spacing={1}>
                 {meals.map((meal, index) => {
                     return (
