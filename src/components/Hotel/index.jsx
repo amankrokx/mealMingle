@@ -1,6 +1,6 @@
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Stack, TextField } from '@mui/material';
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Stack, TextField, useTheme } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { encode } from 'ngeohash';
@@ -10,6 +10,7 @@ import LoaderUtils from '../Loader/LoaderUtils.jsx';
 import randomId from '../randomId/index.js';
 
 export default function Hotel({ hotels = [], uid }) {
+    const theme = useTheme()
     const [addHotel, setAddHotel] = React.useState({
         open: false,
     })
@@ -30,19 +31,30 @@ export default function Hotel({ hotels = [], uid }) {
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
             }).addTo(map);
-            navigator.permissions.query({ name: "geolocation" }).then(result => {
-                console.log(result)
-                if (result.state === "granted") {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        map.setView([position.coords.latitude, position.coords.longitude], 13)
-                        L.marker([position.coords.latitude, position.coords.longitude], {
-                            draggable: true,
-                        }).addTo(map).bindPopup("You are here").on("moveend", mapMove)
-                        setAddHotel(e => ({...e, location: [position.coords.latitude, position.coords.longitude]}))
-                    })
-                }
+            // navigator.permissions.query({ name: "geolocation" }).then(result => {
+                // console.log(result)
+                // if (result.state === "granted") {
+                    // navigator.geolocation.getCurrentPosition((position) => {
+                        // map.setView([position.coords.latitude, position.coords.longitude], 13)
+                        // L.marker([position.coords.latitude, position.coords.longitude], {
+                            //     draggable: true,
+                            // }).addTo(map).bindPopup("You are here").on("moveend", mapMove)
+                            // setAddHotel(e => ({...e, location: [position.coords.latitude, position.coords.longitude]}))
+                            // })
+                            // }
+                            // })
+            fetch("http://ip-api.com/json").then(res => res.json()).then(data => {
+                const location = new L.LatLng(data.lat, data.lon)
+                map.setView(location, 13)
+                L.marker(location, {
+                    draggable: true,
+                })
+                    .addTo(map)
+                    .bindPopup("You are here")
+                    .on("moveend", mapMove)
+                setAddHotel(e => ({ ...e, location: [data.lat, data.lon] }))
             })
-
+                            
             return () => {
                 map.off('click', mapClick)
                 map.remove()
@@ -52,12 +64,12 @@ export default function Hotel({ hotels = [], uid }) {
 
     function addHotelSubmit(e) {
         e.preventDefault()
-        LoaderUtils.halt()
         setError(null)
         if (!addHotel.name || !addHotel.location) {
             setError("Enter Hotel details !")
             return
         }
+        LoaderUtils.halt()
         // add hotel to database
         // add hotel to hotels array in fireabase firestore
         /*
@@ -85,62 +97,94 @@ export default function Hotel({ hotels = [], uid }) {
 
     }
 
+    function deleteHotel(index) {
+        LoaderUtils.halt()
+        updateDoc(doc(firestore, "users", uid), {
+            hotels: arrayRemove(hotels[index])
+        }).catch(console.log)
+        .finally(() => LoaderUtils.unhalt())
+    }
+
     return (
-        <Box sx={{
-            p: 1,
-        }}>
-            <nav style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-            }}>
-                <Typography variant="h5" color="initial">Hotels ( {hotels.length} )</Typography>
-                <Button variant="contained" color="primary" onClick={() => setAddHotel(e => ({...e, open: true}))}>Add <span className="material-icons" style={{fontSize: "1.5em", marginLeft: 8}}>add</span></Button>
+        <Box
+            sx={{
+                p: 1,
+                backgroundColor: theme.palette.background.main
+            }}
+        >
+            <nav
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                }}
+            >
+                <Typography variant="h5" color="initial">
+                    Hotels ( {hotels.length} )
+                </Typography>
+                <Button variant="contained" color="primary" onClick={() => setAddHotel(e => ({ ...e, open: true }))}>
+                    Add{" "}
+                    <span className="material-icons" style={{ fontSize: "1.5em", marginLeft: 8 }}>
+                        add
+                    </span>
+                </Button>
             </nav>
-            <Divider sx={{
-                pt: 2
-            }}></Divider>
+            <Divider
+                sx={{
+                    pt: 2,
+                }}
+            ></Divider>
 
             <Stack spacing={1} p={2}>
-                {hotels.map((hotel, index) => 
-                    <>
-                    <Box sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        flexDirection: "row"
-                        // borderBottom: "1px solid lightgrey"
-                    }}>
-                        <Typography variant="h6" color="initial">{hotel.hotelName}</Typography>
-                        <IconButton onClick={() => deleteHotel(index)} color='error'>
-                            <span className="material-icons">delete</span>
-                        </IconButton>
-                    </Box>
-                    <Divider></Divider>
-                    </>
-                )}
+                {hotels.map((hotel, index) => (
+                    <div key={hotel.hotelId}>
+                        <Box 
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                flexDirection: "row",
+                                // borderBottom: "1px solid lightgrey"
+                            }}
+                        >
+                            <Typography variant="h6" color="initial">
+                                {hotel.hotelName}
+                            </Typography>
+                            <IconButton onClick={() => deleteHotel(index)} color="error">
+                                <span className="material-icons">delete</span>
+                            </IconButton>
+                        </Box>
+                        <Divider></Divider>
+                    </div>
+                ))}
             </Stack>
 
-            <Dialog open={addHotel.open} onClose={() => setAddHotel(e => ({...e, open: false}))} fullWidth>
+            <Dialog fullScreen open={addHotel.open} onClose={() => setAddHotel(e => ({ ...e, open: false }))} fullWidth>
                 <DialogTitle>Add Hotel</DialogTitle>
                 <DialogContent>
                     <form>
-                        <TextField
-                            autoFocus
-                            fullWidth
-                            margin='normal'
-                            label="Hotel Name"
-                            onChange={(e) => setAddHotel(h => ({...h, name: e.target.value}))}                          
-                        />
-                        <div ref={mapRef} style={{
-                            height: 300,
-                            width: "100%",
-                        }}></div>
+                        <TextField autoFocus fullWidth margin="normal" label="Hotel Name" onChange={e => setAddHotel(h => ({ ...h, name: e.target.value }))} />
+                        <div
+                            ref={mapRef}
+                            style={{
+                                height: 300,
+                                width: "100%",
+                            }}
+                        ></div>
                     </form>
-                    {error ? <><br></br><Alert severity='error' >{error}</Alert></> : null}
+                    {error ? (
+                        <>
+                            <br></br>
+                            <Alert severity="error">{error}</Alert>
+                        </>
+                    ) : null}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setAddHotel(e => ({...e, open: false}))} variant='text' type='reset' color='warning'>Cancel</Button>
-                    <Button onClick={addHotelSubmit} variant='contained' type='submit'>Add</Button>
+                    <Button onClick={() => setAddHotel(e => ({ ...e, open: false }))} variant="text" type="reset" color="warning">
+                        Cancel
+                    </Button>
+                    <Button onClick={addHotelSubmit} variant="contained" type="submit">
+                        Add
+                    </Button>
                 </DialogActions>
             </Dialog>
         </Box>

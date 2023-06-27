@@ -2,11 +2,16 @@ package com.example.mealmingle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.GeolocationPermissions;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -40,16 +45,27 @@ public class ProfileActivityActivity extends AppCompatActivity {
         setContentView(R.layout.profile_activity);
         loginButton = findViewById(R.id.login);
         logoutButton = findViewById(R.id.logout);
-
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
             loginButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
             ImageButton profilePic = findViewById(R.id.profileButton);
-            WebView w = findViewById(R.id.profileWebView);
-            w.getSettings().setJavaScriptEnabled(true);
-            w.loadUrl("https://mealmingle.web.app/profile#uid=" + user.getUid());
+            WebView webView = findViewById(R.id.profileWebView);
+            WebSettings ws = webView.getSettings();
+            ws.setJavaScriptEnabled(true);
+            webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+            // Below required for geolocation
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setGeolocationEnabled(true);
+
+            webView.getSettings().setDatabaseEnabled(true);
+            webView.getSettings().setDomStorageEnabled(true);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ws.setGeolocationEnabled(true);
+            }
+            webView.loadUrl("https://mealmingle.web.app/profile#uid=" + user.getUid());
             Picasso.get().load(user.getPhotoUrl()).error(R.drawable.baseline_account_circle_24).placeholder(R.drawable.baseline_account_circle_24).into(profilePic);
             initUiData();
             Log.d("MainActivity", user.toString());
