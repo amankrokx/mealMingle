@@ -88,6 +88,7 @@ export default function Hotel({ hotels = [], uid }) {
         // create meal in firestore
         // add meal to meals and combine hotel info to meal
         const hotel = hotels.find(hotel => hotel.hotelId === mealData.hotelId)
+        console.log(hotel)
         addDoc(collection(firestore, "meals"), {
             name: mealData.name,
             hotelId: mealData.hotelId,

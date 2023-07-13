@@ -86,15 +86,15 @@ export default function Hotel({ hotels = [], uid }) {
        console.log({
            hotelName: addHotel.name,
            hotelId: randomId(7),
-           hash: encode(addHotel.location[0], addHotel.location[1], 9),
-           lat: addHotel.location[0],
-           lng: addHotel.location[1],
-       }, addHotel)
+           hash: encode(addHotel.location.lat, addHotel.location.lng, 9),
+           lat: addHotel.location.lat,
+           lng: addHotel.location.lng,
+        }, addHotel)
         updateDoc(doc(firestore, "users", uid), {
             hotels: arrayUnion({
                 hotelName: addHotel.name,
                 hotelId: randomId(7),
-                hash: encode(addHotel.location[0], addHotel.location[1], 9),
+                hash: encode(addHotel.location.lat, addHotel.location.lng, 9),
                 lat: addHotel.location.lat,
                 lng: addHotel.location.lng,
             })
