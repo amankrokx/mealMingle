@@ -98,10 +98,10 @@ export default function Hotel({ hotels = [], uid }) {
             hash: hotel.hash,
             photoUrl: "https://picsum.photos/80",
             servings: parseInt(mealData.servings),
-            nonVeg: mealData.nonVeg,
+            nonVeg: mealData.nonVeg === "true" ? true : false,
             description: mealData.description,
             expiresAt: serverTimestamp(),
-            price: mealData.price,
+            price: parseInt(mealData.price || 0),
         }).then(() => {
             setMealData({
                 open: false,
@@ -209,9 +209,9 @@ export default function Hotel({ hotels = [], uid }) {
                     )
                 })}
             </Stack>
-            <Dialog fullScreen open={mealData.open} onClose={() => setMealData(e => ({ ...e, open: false }))}>
-                <DialogTitle>Add Meal</DialogTitle>
-                <DialogContent>
+            <Dialog fullScreen open={mealData.open} onClose={() => setMealData(e => ({ ...e, open: false }))} sx={{ backgroundColor: "#fbfdf8" }}>
+                <DialogTitle sx={{ backgroundColor: "#fbfdf8" }}>Add Meal</DialogTitle>
+                <DialogContent sx={{ backgroundColor: "#fbfdf8" }}>
                     <Stack style={{ padding: "8px 0" }} spacing={2}>
                         <TextField label="Meal Name" onChange={e => setMealData(h => ({ ...h, name: e.target.value }))} fullWidth />
                         <TextField label="Meal Description" onChange={e => setMealData(h => ({ ...h, description: e.target.value }))} rows={3} multiline fullWidth />
@@ -251,7 +251,7 @@ export default function Hotel({ hotels = [], uid }) {
                         </Alert>
                     ) : null}
                 </DialogContent>
-                <DialogActions>
+                <DialogActions sx={{ backgroundColor: "#fbfdf8" }}>
                     <Button onClick={() => setMealData(e => ({ ...e, open: false }))} color="warning">
                         Cancel
                     </Button>

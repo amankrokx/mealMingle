@@ -2,6 +2,8 @@ import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, 
 import Typography from '@mui/material/Typography';
 import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import 'leaflet';
+import { Icon } from "leaflet";
+import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import 'leaflet/dist/leaflet.css';
 import { encode } from 'ngeohash';
 import React, { useEffect, useRef, useState } from "react";
@@ -50,6 +52,11 @@ export default function Hotel({ hotels = [], uid }) {
                     map.setView(location, 13)
                     L.marker(location, {
                         draggable: true,
+                        icon: new Icon({
+                            iconUrl: markerIconPng,
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                        })
                     })
                         .addTo(map)
                         .bindPopup("You are here")
@@ -118,7 +125,7 @@ export default function Hotel({ hotels = [], uid }) {
         <Box
             sx={{
                 p: 1,
-                backgroundColor: theme.palette.background.main
+                backgroundColor: theme.palette.background.main,
             }}
         >
             <nav
@@ -147,7 +154,7 @@ export default function Hotel({ hotels = [], uid }) {
             <Stack spacing={1} p={2}>
                 {hotels.map((hotel, index) => (
                     <div key={hotel.hotelId}>
-                        <Box 
+                        <Box
                             sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
@@ -168,8 +175,8 @@ export default function Hotel({ hotels = [], uid }) {
             </Stack>
 
             <Dialog fullScreen open={addHotel.open} onClose={() => setAddHotel(e => ({ ...e, open: false }))} fullWidth>
-                <DialogTitle>Add Hotel</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ backgroundColor: "#fbfdf8" }}>Add Hotel</DialogTitle>
+                <DialogContent sx={{ backgroundColor: "#fbfdf8" }}>
                     <form>
                         <TextField autoFocus fullWidth margin="normal" label="Hotel Name" onChange={e => setAddHotel(h => ({ ...h, name: e.target.value }))} />
                         <div
@@ -187,7 +194,7 @@ export default function Hotel({ hotels = [], uid }) {
                         </>
                     ) : null}
                 </DialogContent>
-                <DialogActions>
+                <DialogActions sx={{ backgroundColor: "#fbfdf8" }}>
                     <Button onClick={() => setAddHotel(e => ({ ...e, open: false }))} variant="text" type="reset" color="warning">
                         Cancel
                     </Button>
