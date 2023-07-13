@@ -116,7 +116,12 @@ export default function Hotel({ hotels = [], uid }) {
 
 
     return (
-        <Box p={1}>
+        <Box
+            p={1}
+            sx={{
+                backgroundColor: "#fbfdf8",
+            }}
+        >
             <nav
                 style={{
                     display: "flex",
@@ -127,7 +132,9 @@ export default function Hotel({ hotels = [], uid }) {
                 <Typography variant="h5" color="initial">
                     Meals History
                 </Typography>
-                <Button variant="contained" color="primary"
+                <Button
+                    variant="contained"
+                    color="primary"
                     disabled={hotels.length === 0}
                     onClick={() => {
                         setMealData({
@@ -204,42 +211,15 @@ export default function Hotel({ hotels = [], uid }) {
             <Dialog fullScreen open={mealData.open} onClose={() => setMealData(e => ({ ...e, open: false }))}>
                 <DialogTitle>Add Meal</DialogTitle>
                 <DialogContent>
-                    <Stack style={{padding: "8px 0"}} spacing={2}>
-                        <TextField
-                            label="Meal Name"
-                            onChange={(e) => setMealData(h => ({ ...h, name: e.target.value }))}
-                            fullWidth
-                        />
-                        <TextField
-                            label="Meal Description"
-                            onChange={(e) => setMealData(h => ({ ...h, description: e.target.value }))}
-                            rows={3}
-                            multiline
-                            fullWidth
-                        />
-                        <TextField
-                            label="Meal Price"
-                            onChange={(e) => setMealData(h => ({ ...h, price: e.target.value }))}
-                            fullWidth
-                            type="number"
-                            defaultValue={0}
-                        />
-                        <TextField
-                            label="Meal Servings"
-                            onChange={(e) => setMealData(h => ({ ...h, servings: e.target.value }))}
-                            fullWidth
-                            type="number"
-                            defaultValue={0}
-                        />
+                    <Stack style={{ padding: "8px 0" }} spacing={2}>
+                        <TextField label="Meal Name" onChange={e => setMealData(h => ({ ...h, name: e.target.value }))} fullWidth />
+                        <TextField label="Meal Description" onChange={e => setMealData(h => ({ ...h, description: e.target.value }))} rows={3} multiline fullWidth />
+                        <TextField label="Meal Price" onChange={e => setMealData(h => ({ ...h, price: e.target.value }))} fullWidth type="number" defaultValue={0} />
+                        <TextField label="Meal Servings" onChange={e => setMealData(h => ({ ...h, servings: e.target.value }))} fullWidth type="number" defaultValue={0} />
                         {/* radio fro ceg or nonveg */}
                         <FormControl component="fieldset">
                             <FormLabel component="legend">Meal Type</FormLabel>
-                            <RadioGroup
-                                aria-label="meal type"
-                                name="meal type"
-                                value={mealData?.nonVeg || false}
-                                onChange={(e) => setMealData(h => ({ ...h, nonVeg: e.target.value }))}
-                            >
+                            <RadioGroup aria-label="meal type" name="meal type" value={mealData?.nonVeg || false} onChange={e => setMealData(h => ({ ...h, nonVeg: e.target.value }))}>
                                 <FormControlLabel value={false} control={<Radio />} label="Veg" />
                                 <FormControlLabel value={true} control={<Radio />} label="Non-Veg" />
                             </RadioGroup>
@@ -252,21 +232,31 @@ export default function Hotel({ hotels = [], uid }) {
                                 id="demo-simple-select"
                                 value={mealData?.hotelId || ""}
                                 label="Hotel"
-                                onChange={(e) => setMealData(h => ({ ...h, hotelId: e.target.value }))}
+                                onChange={e => setMealData(h => ({ ...h, hotelId: e.target.value }))}
                             >
                                 {hotels.map((hotel, index) => {
                                     return (
-                                        <MenuItem key={index} value={hotel.hotelId}>{hotel.hotelName}</MenuItem>
+                                        <MenuItem key={index} value={hotel.hotelId}>
+                                            {hotel.hotelName}
+                                        </MenuItem>
                                     )
                                 })}
                             </Select>
                         </FormControl>
                     </Stack>
-                    {error ? <Alert security="error" severity="error">{error}</Alert> : null}
+                    {error ? (
+                        <Alert security="error" severity="error">
+                            {error}
+                        </Alert>
+                    ) : null}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setMealData(e => ({ ...e, open: false }))} color="warning">Cancel</Button>
-                    <Button onClick={() => createMeal()} variant="contained" >Add</Button>
+                    <Button onClick={() => setMealData(e => ({ ...e, open: false }))} color="warning">
+                        Cancel
+                    </Button>
+                    <Button onClick={() => createMeal()} variant="contained">
+                        Add
+                    </Button>
                 </DialogActions>
             </Dialog>
         </Box>

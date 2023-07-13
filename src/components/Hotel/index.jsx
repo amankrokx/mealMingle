@@ -54,7 +54,7 @@ export default function Hotel({ hotels = [], uid }) {
                         .addTo(map)
                         .bindPopup("You are here")
                         .on("moveend", mapMove)
-                    setAddHotel(e => ({ ...e, location: [data.lat, data.lon] }))
+                    setAddHotel(e => ({ ...e, location: [data.location.lat, data.location.lng] }))
                 })
                             
             return () => {
@@ -83,13 +83,20 @@ export default function Hotel({ hotels = [], uid }) {
                 lng: 0.1
             }
         */
+       console.log({
+           hotelName: addHotel.name,
+           hotelId: randomId(7),
+           hash: encode(addHotel.location[0], addHotel.location[1], 9),
+           lat: addHotel.location[0],
+           lng: addHotel.location[1],
+       }, addHotel)
         updateDoc(doc(firestore, "users", uid), {
             hotels: arrayUnion({
                 hotelName: addHotel.name,
                 hotelId: randomId(7),
                 hash: encode(addHotel.location[0], addHotel.location[1], 9),
-                lat: addHotel.location[0],
-                lng: addHotel.location[1],
+                lat: addHotel.location.lat,
+                lng: addHotel.location.lng,
             })
         }).then(v => {
             setAddHotel(e => ({...e, open: false}))

@@ -15,6 +15,8 @@ import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +61,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -109,41 +112,36 @@ public class MainActivity extends AppCompatActivity {
             logoutButton.setVisibility(View.GONE);
         }
 
-            RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-            String url = "http://ip-api.com/json"; // Replace with your API endpoint
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        String url = "http://ip-api.com/json"; // Replace with your API endpoint
 
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                    response -> {
-                        try {
-                            String lat = response.getString("lat");
-                            String lon = response.getString("lon");
-                            center = new GeoLocation(Double.parseDouble(lat), Double.parseDouble(lon));
-                            Log.d("Coordinates", lat + ", " + lon);
-                            listenToDatabase();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        String lat = response.getString("lat");
+                        String lon = response.getString("lon");
+                        center = new GeoLocation(Double.parseDouble(lat), Double.parseDouble(lon));
+                        Log.d("Coordinates", lat + ", " + lon);
+                        listenToDatabase();
 
-                            // Process the user object
-                        } catch (Exception e) {
-                            Log.e("Coordinates", "Error");
-                            e.printStackTrace();
-                        }
-                    },
-                    error -> {
-                        // Handle error
+                        // Process the user object
+                    } catch (Exception e) {
                         Log.e("Coordinates", "Error");
-                        error.printStackTrace();
-                    });
+                        e.printStackTrace();
+                    }
+                },
+                error -> {
+                    // Handle error
+                    Log.e("Coordinates", "Error");
+                    error.printStackTrace();
+                });
 
-            requestQueue.add(request);
-
-
-
-
-
+        requestQueue.add(request);
 
 
     }
 
-    public void listenToDatabase () {
+    public void listenToDatabase() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         List<GeoQueryBounds> bounds = GeoFireUtils.getGeoHashQueryBounds(center, radius);
         final List<Task<QuerySnapshot>> tasks = new ArrayList<>();
@@ -202,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void login () {
+    public void login() {
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -219,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         signInLauncher.launch(signInIntent);
     }
 
-    public void login (View v) {
+    public void login(View v) {
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -262,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void logout (View v) {
+    public void logout(View v) {
         MainActivity act = this;
         AuthUI.getInstance()
                 .signOut(this)
@@ -277,5 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
                 });
     }
+
+    public static TextToSpeech tts;
 
 }
